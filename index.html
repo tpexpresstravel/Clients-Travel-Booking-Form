@@ -312,11 +312,25 @@
   }
 
   // Form submit
-  document.getElementById('bookingForm').addEventListener('submit', function(e) {
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
     e.preventDefault();
     if (!this.checkValidity()) { this.reportValidity(); return; }
-    document.getElementById('successOverlay').classList.add('show');
-  });
+    var form = this;
+    fetch('https://formspree.io/f/xaqkzzvr', {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+    }).then(function(res) {
+        if (res.ok) {
+            document.getElementById('successOverlay').classList.add('show');
+            form.reset();
+        } else {
+            alert('Something went wrong. Please email us directly at tpexpresstravelconsultant@gmail.com');
+        }
+    }).catch(function() {
+        alert('Connection error. Please email us directly at tpexpresstravelconsultant@gmail.com');
+    });
+});
 </script>
 </body>
 </html>
