@@ -275,11 +275,9 @@
     </div>
 
     <div class="submit-area">
-      <p class="submit-note">By submitting, you confirm all information is accurate.<br/>Email completed forms to <a href="mailto:tpexpresstravelconsultant@gmail.com">tpexpresstravelconsultant@gmail.com</a></p>
-      <button type="submit">Submit Booking Form</button>
-    </div>
-
-  </form>
+  <p class="submit-note">By submitting, you confirm all information is accurate.</p>
+  <div id="initialsError" style="display:none; color:#c0392b; font-size:12px; font-weight:600; letter-spacing:1px; text-align:center; margin-bottom:8px;">⚠ Please initial all three agreement fields before submitting.</div>
+  <button type="submit">Submit Booking Form</button>
 </div>
 
 <div class="form-footer">© TP Enterprise Express Travel Agency · Lusby, MD · tpexpresstravelconsultant@gmail.com</div>
@@ -316,6 +314,22 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
     e.preventDefault();
     if (!this.checkValidity()) { this.reportValidity(); return; }
     var form = this;
+    var initials = ['initials_1', 'initials_2', 'initials_3'];
+    var initialsValid = true;
+    initials.forEach(function(name) {
+        var el = form.querySelector('[name="' + name + '"]');
+        if (!el.value.trim() || el.value.trim().length < 2) {
+            el.style.borderColor = '#c0392b';
+            initialsValid = false;
+        } else {
+            el.style.borderColor = '';
+        }
+    });
+    if (!initialsValid) {
+        document.getElementById('initialsError').style.display = 'block';
+        return;
+    }
+    document.getElementById('initialsError').style.display = 'none';
     fetch('https://formspree.io/f/xaqkzzvr', {
         method: 'POST',
         body: new FormData(form),
@@ -325,10 +339,10 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
             document.getElementById('successOverlay').classList.add('show');
             form.reset();
         } else {
-            alert('Something went wrong. Please email us directly at tpexpresstravelconsultant@gmail.com');
+            alert('Something went wrong. Please try again.');
         }
     }).catch(function() {
-        alert('Connection error. Please email us directly at tpexpresstravelconsultant@gmail.com');
+        alert('Connection error. Please try again.');
     });
 });
 </script>
